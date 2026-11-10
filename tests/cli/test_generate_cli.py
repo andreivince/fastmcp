@@ -2,6 +2,7 @@
 
 import ast
 import sys
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -961,8 +962,8 @@ class TestGenerateSkillContent:
         @server.tool
         def search(
             query: str,
-            count: int,
             key: str | int,
+            when: date | datetime,
             limit: int | None = None,
             ids: list[int] | None = None,
         ) -> None:
@@ -973,6 +974,7 @@ class TestGenerateSkillContent:
 
         content = generate_skill_content("search", "cli.py", tools)
         assert "| `--key` | string \\| integer | yes |" in content
+        assert "| `--when` | string | yes |" in content
         assert "| `--limit` | integer \\| null | no |" in content
         assert "| `--ids` | array[integer] \\| null | no |" in content
 
@@ -991,7 +993,7 @@ class TestGenerateSkillContent:
         # Rich wraps long lines, so compare with whitespace collapsed.
         listed = " ".join(capsys.readouterr().out.split())
         assert (
-            "search(query: string, count: integer, key: string | integer, "
+            "search(query: string, key: string | integer, when: string, "
             "limit: integer | null = ..., ids: array | null = ...)"
         ) in listed
 

@@ -469,7 +469,7 @@ def generate_cli_script(
                 and isinstance(branches, list)
                 and all(isinstance(branch, dict) for branch in branches)
             ):
-                return " | ".join(_type_label(branch) for branch in branches)
+                return " | ".join(dict.fromkeys(_type_label(b) for b in branches))
             schema_type = schema.get("type", "string")
             if isinstance(schema_type, list):
                 return " | ".join(schema_type)
@@ -680,7 +680,7 @@ def _schema_type_label(prop_schema: dict[str, Any]) -> str:
         and isinstance(branches, list)
         and all(isinstance(branch, dict) for branch in branches)
     ):
-        return " | ".join(_schema_type_label(branch) for branch in branches)
+        return " | ".join(dict.fromkeys(_schema_type_label(b) for b in branches))
 
     schema_type = prop_schema.get("type", "string")
     if isinstance(schema_type, list):
